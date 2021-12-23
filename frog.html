@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8"/>
+    <title></title>
+    <script src="js/vue.js" type="text/javascript" charset="utf-8"></script>
+</head>
+<body>
+<canvas id="myCanvas" width="800" height="600"></canvas>
+<div id="app">
+	
+    <input type="text" @click="show()" v-model="inputs" @keyup.enter="show()" id="inputs" value=""/><!--点击事件-->
+    <br>跳跃次数：{{pace}}
+    <br>得分：{{score}}
+</div>
+<script type="text/javascript">
+	var firstbackground = "img/background.gif";
+	var frog = "img/frog.gif";
+    let v = new Vue({
+        el: "#app",
+        data: {
+            inputs: "",
+            count: 0,
+            pace: 0, //跳跃次数
+            score: 0,  //得分
+			level:1
+        },
+        methods: {
+        	counter(){
+        		this.count++;
+                this.pace++;
+                this.score += 100;  //每成功跳到一片荷叶上，分数就+100分
+                this.inputs = "";
+        	},
+        	jump(x,y,bg,frog){
+        		let canvas = document.getElementById("myCanvas");
+                let ctx = canvas.getContext('2d');
+                let img_background = new Image();
+                img_background.src = bg;
+                img_background.onload = function () {
+                    ctx.drawImage(img_background, 0, 0);
+                }
+                let img_frog = new Image();
+                img_frog.src = frog;
+                img_frog.onload = function () {
+                    ctx.drawImage(img_frog, x, y);
+                }
+                return;
+        	},
+            show() {
+               if(v.level==1){
+				   //条件判断
+				   if (this.count === 0 && this.inputs === "hello") {
+				       this.jump(240,290,firstbackground,frog);
+				       this.counter();
+				   }
+				   if (this.count === 1 && this.inputs === "world") {
+				       this.jump(430,190,firstbackground,frog);
+				       this.counter();
+				   }
+				   if (this.count === 2 && this.inputs === "hi") {
+				       this.jump(350,50,firstbackground,frog);
+				       this.counter();
+				   }
+				   this.inputs = "";
+				   return;
+			   }
+			   if(v.level==2){
+   				   //条件判断
+   				   if (this.count === 0 && this.inputs === "brush") {
+   				       this.jump(300,380,firstbackground,frog);
+   				       this.counter();
+   				   }
+   				   if (this.count === 1 && this.inputs === "feet") {
+   				       this.jump(600,170,firstbackground,frog);
+   				       this.counter();
+   				   }
+   				   if (this.count === 2 && this.inputs === "man") {
+   				       this.jump(500,50,firstbackground,frog);
+   				       this.counter();
+   				   }
+   				   this.inputs = "";
+   				   return;
+			   }
+            },
+            reNew(){
+            	this.inputs = '';
+            	this.count = 0,
+            	this.pace = 0, //跳跃次数
+            	this.score = 0,  //得分
+				this.level = 1
+            }
+        },
+        created() {
+            this.jump(150,90,firstbackground,"img/frog.gif");
+        },
+        updated() {
+            if (this.count === 3) {
+            	this.count = 0;   
+            	if(this.level === 1){
+            		alert("第1关闯关成功！ 本次得分："+this.score);	
+            		this.level = 2;
+            		//更换图片
+					firstbackground = "img/secondBackground.png";
+					this.jump(100,100,firstbackground,"img/frog.gif");
+					return;
+            	}
+                if(this.level === 2){
+                	alert("第2关闯关成功！最总得分："+this.score);	
+            		this.reNew();
+            		//更换图片
+					firstbackground = "img/background.gif";
+					this.jump(100,100,firstbackground,"img/frog.gif");
+            		return;
+                }
+            }
+        }
+    })
+</script>
+</body>
+</html>
